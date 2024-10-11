@@ -9,7 +9,6 @@ import traceback
 from .global_collector import GlobalCollector
 from . import factgen
 from .irgen import CodeTransformer
-from .render import to_html
 from .config import configs
 
 def remove_files(folder):
@@ -146,13 +145,6 @@ def main(input_path):
     if t[5] == -1:
         print("Failed to analyze: " + input_path)
         return "Failed to analyze" 
-
-    if configs.output_flag:
-        print("Converting notebooks to html...")
-        try:
-            to_html(input_path, fact_path, html_path, lineno_map)
-        except:
-            print("Conversion failed!")
     
     print("Success!\t{:.2f}\t{:.2f}\t{:.2f}\t{:.2f}\t".format(t[0]+t[1]+t[3]+t[4], t[2], t[5], sum(t)))
     return t
