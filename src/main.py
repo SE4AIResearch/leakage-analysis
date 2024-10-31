@@ -1,7 +1,6 @@
 import os, sys
 import ast
 import astunparse
-import json
 import shutil
 import argparse
 import time
@@ -50,7 +49,7 @@ def ir_transform(tree, ir_path):
     v = CodeTransformer(ignored_vars)
     new_tree = v.visit(tree)
     new_code = astunparse.unparse(new_tree)
-    # print(new_code)
+
     with open(ir_path, "w") as f:
         f.write(new_code)
     return new_tree
@@ -58,8 +57,7 @@ def ir_transform(tree, ir_path):
 @time_decorator
 def infer_types(ir_path):
     # Call type inference engine here
-    # os.system(f"source ~/.nvm/nvm.sh && nvm use 12 && cd /home/arnav/Documents/Classes/CS423/Programs/leakage-analysis/pyright && npm install && cd /home/arnav/Documents/Classes/CS423/Programs/leakage-analysis/pyright/packages/pyright && npm run build && cd /home/arnav/Documents/Classes/CS423/Programs/leakage-analysis && node {configs.inference_path} {ir_path} --lib")
-    print(f"source ~/.nvm/nvm.sh && nvm use 12 && node {configs.inference_path} {ir_path} --lib")
+    os.system(f"node {configs.inference_path} {ir_path} --lib")
 
 def generate_lineno_mapping(tree1, tree2):
     lineno_map = {}
@@ -93,7 +91,7 @@ def generate_facts(tree, json_path, fact_path):
 
 @time_decorator
 def datalog_analysis(fact_path):
-    ret = os.system(f"timeout 5m ./main_static_souffle -F {fact_path} -D {fact_path}")
+    ret = os.system(f"./main_static_souffle -F {fact_path} -D {fact_path}")
     if ret != 0:
         raise TimeoutError
 
@@ -118,7 +116,6 @@ def main(input_path):
         print("Failed to infer types: " + input_path)
         return "Failed to infer types" 
 
-    
     newtree, t[3] = load_input(ir_path)
     if t[3] == -1:
         print("Failed to parse transformed file: " + input_path)
@@ -129,8 +126,6 @@ def main(input_path):
         os.makedirs(fact_path)
     else:
         remove_files(fact_path)
-    
-    print(configs.output_flag)
 
     if configs.output_flag:
         lineno_map = generate_lineno_mapping(tree, newtree)
