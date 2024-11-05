@@ -5,6 +5,7 @@ import shutil
 import argparse
 import time
 import traceback
+import platform
 from src.global_collector import GlobalCollector
 import src.factgen as factgen
 from src.irgen import CodeTransformer
@@ -91,7 +92,15 @@ def generate_facts(tree, json_path, fact_path):
 
 @time_decorator
 def datalog_analysis(fact_path):
-    ret = os.system(f"./main_static_souffle -F {fact_path} -D {fact_path}")
+    ret = None
+
+    if platform.uname().system == "Windows":
+        ret = os.system(f"leakage_algo_windows.exe -F {fact_path} -D {fact_path}")
+    elif platform.uname().system == "Linux":
+        ret = os.system(f"./leakage_algo_linux -F {fact_path} -D {fact_path}")
+    else:
+        ret = os.system(f"souffle ./main.dl -F {fact_path} -D {fact_path}")
+
     if ret != 0:
         raise TimeoutError
 
