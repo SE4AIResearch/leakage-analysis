@@ -5,10 +5,10 @@ import shutil
 import argparse
 import time
 import traceback
-from .global_collector import GlobalCollector
-from . import factgen
-from .irgen import CodeTransformer
-from .config import configs
+from src.global_collector import GlobalCollector
+import src.factgen as factgen
+from src.irgen import CodeTransformer
+from src.config import configs
 
 def remove_files(folder):
     for filename in os.listdir(folder):
@@ -147,6 +147,10 @@ def main(input_path):
     return t
 
 if __name__ == "__main__":
+    file_abs_path = os.path.abspath(__file__)
+    file_dirname = os.path.dirname(file_abs_path)
+    os.chdir(file_dirname)
+
     parser = argparse.ArgumentParser(description='Run analysis for a single file')
     parser.add_argument('file', help='the python file to be analyzed')
     parser.add_argument('-o', '--output-flag', help='output html file', action="store_true")

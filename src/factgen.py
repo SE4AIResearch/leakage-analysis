@@ -1,9 +1,7 @@
-import os, sys
 import ast
-import astunparse
 import json
 from collections import defaultdict
-from .scope import ScopeManager
+from src.scope import ScopeManager
 
 class FactManager(object):
 
