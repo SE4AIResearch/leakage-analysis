@@ -5,10 +5,11 @@ import shutil
 import argparse
 import time
 import traceback
-from .global_collector import GlobalCollector
-from . import factgen
-from .irgen import CodeTransformer
-from .config import configs
+import platform
+from src.global_collector import GlobalCollector
+import src.factgen as factgen
+from src.irgen import CodeTransformer
+from src.config import configs
 
 def remove_files(folder):
     for filename in os.listdir(folder):
@@ -91,7 +92,15 @@ def generate_facts(tree, json_path, fact_path):
 
 @time_decorator
 def datalog_analysis(fact_path):
-    ret = os.system(f"./main_static_souffle -F {fact_path} -D {fact_path}")
+    ret = None
+
+    if platform.uname().system == "Windows":
+        ret = os.system(f"leakage_algo_windows.exe -F {fact_path} -D {fact_path}")
+    elif platform.uname().system == "Linux":
+        ret = os.system(f"./leakage_algo_linux -F {fact_path} -D {fact_path}")
+    else:
+        ret = os.system(f"souffle ./main.dl -F {fact_path} -D {fact_path}")
+
     if ret != 0:
         raise TimeoutError
 
@@ -147,6 +156,10 @@ def main(input_path):
     return t
 
 if __name__ == "__main__":
+    file_abs_path = os.path.abspath(__file__)
+    file_dirname = os.path.dirname(file_abs_path)
+    os.chdir(file_dirname)
+
     parser = argparse.ArgumentParser(description='Run analysis for a single file')
     parser.add_argument('file', help='the python file to be analyzed')
     parser.add_argument('-o', '--output-flag', help='output html file', action="store_true")

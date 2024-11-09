@@ -1,6 +1,5 @@
 import ast
-from collections import defaultdict
-from .scope import ScopeManager
+from src.scope import ScopeManager
 
 class GlobalCollector(ast.NodeVisitor):
     def __init__(self) -> None:

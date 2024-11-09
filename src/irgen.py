@@ -1,11 +1,7 @@
-import os, sys
 import ast
 import copy
-import astunparse
-import json
-from collections import defaultdict
-from .scope import ScopeManager
-from .factgen import FactManager
+from src.scope import ScopeManager
+from src.factgen import FactManager
 
 # definition of injected functions, for the convience of type checking
 phi_def_code = '''

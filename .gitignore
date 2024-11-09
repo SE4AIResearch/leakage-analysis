@@ -8,3 +8,6 @@ tests/Github_samples*
 __pycache__
 tmp
 venv/
+dist*/
+build/
+main.spec
