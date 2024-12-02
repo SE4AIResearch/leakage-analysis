@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, subprocess
 import ast
 import astunparse
 import shutil
@@ -68,7 +68,9 @@ def infer_types(ir_path):
         else:
             env.pop(lp_key, None)
 
-    os.system(f"node {configs.inference_path} {ir_path} --lib")
+        subprocess.run(["node", configs.inference_path, ir_path, "--lib"], env=env)
+    else: 
+        os.system(f"node {configs.inference_path} {ir_path} --lib")
 
 def generate_lineno_mapping(tree1, tree2):
     lineno_map = {}
