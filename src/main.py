@@ -58,6 +58,16 @@ def ir_transform(tree, ir_path):
 @time_decorator
 def infer_types(ir_path):
     # Call type inference engine here
+    if platform.uname().system == "Linux":
+        env = dict(os.environ)  # make a copy of the environment
+        lp_key = 'LD_LIBRARY_PATH'  # for GNU/Linux and *BSD.
+        lp_orig = env.get(lp_key + '_ORIG')
+
+        if lp_orig is not None:
+            env[lp_key] = lp_orig  # restore the original, unmodified value
+        else:
+            env.pop(lp_key, None)
+
     os.system(f"node {configs.inference_path} {ir_path} --lib")
 
 def generate_lineno_mapping(tree1, tree2):
