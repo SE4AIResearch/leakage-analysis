@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:22.04
 
 # install dependencies
 RUN apt-get update \
@@ -18,7 +18,7 @@ RUN : \
         software-properties-common \
     && add-apt-repository -y ppa:deadsnakes \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-        python3.8-venv \
+        python3.8-venv python3.8-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && :
